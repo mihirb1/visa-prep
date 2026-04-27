@@ -56,7 +56,7 @@ if __name__ == "__main__":
         Transaction(100.0, "Nike"),
         InternationalTransaction(150.0, "Sony", "Japan", 1.2),
         InternationalTransaction(50.0, "Tehran Cafe", "Iran", 1.0),
-        Transaction("five", "Scammer")
+        Transaction(5.0, "Scammer")
     ]
 
     print("--- Visa Batch Processing ---")
