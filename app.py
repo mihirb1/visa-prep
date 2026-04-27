@@ -13,17 +13,11 @@ def validate_route() -> tuple:
     data = request.get_json() # get_json gets requests data, and turns it into py dict
 
     try:
-        # 1. TODO: Extract data from the JSON request
 
         amount = data.get("amount")
         merchant = data.get("merchant")
         country = data.get("country", "USA")
         rate = data.get("rate", 1.0)
-        # 2. TODO: Logic to decide which object to create
-        # Hint: If country is not "USA", create an InternationalTransaction object
-        # Otherwise, create a standard Transaction.
-        # amount, merchant
-        # amount, merchant, country, rate
 
         if country != "USA":
             print(country)
@@ -31,7 +25,6 @@ def validate_route() -> tuple:
         else:
             transaction = Transaction(amount, merchant)
 
-        # 3. TODO: Run .validate() on the object
         transaction.validate()
 
         return jsonify({
