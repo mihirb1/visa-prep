@@ -8,7 +8,7 @@ app = Flask(__name__)
 def validate_route() -> tuple:
     """
     Visa Validation API.
-    Expects JSON: {"amount": 100.0, "merchant": "Nike", "Country": "USA"}
+    Expects JSON: {"amount": 100.0, "merchant": "Nike", "Country": "USA", "rate": 1.0}
     """
     data = request.get_json() # get_json gets requests data, and turns it into py dict
 
@@ -20,7 +20,6 @@ def validate_route() -> tuple:
         rate = data.get("rate", 1.0)
 
         if country != "USA":
-            print(country)
             transaction = InternationalTransaction(amount, merchant, country, rate)
         else:
             transaction = Transaction(amount, merchant)
@@ -29,7 +28,7 @@ def validate_route() -> tuple:
 
         return jsonify({
             "status": "Success",
-            "transaction_status": "Validated",
+            "transaction_status": transaction.status,
             "merchant": merchant
         }), 200
 

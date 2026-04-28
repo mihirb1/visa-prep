@@ -27,6 +27,8 @@ class Transaction:
             raise TypeError("Amount must be numeric")
         elif self.amount <= 0:
             raise ValueError("Amount must be positive")
+        elif self.merchant == "":
+            raise ValueError("Merchant must be specified, can not be blank")
         else:
             self.status = "Validated"
 
@@ -50,21 +52,21 @@ class InternationalTransaction(Transaction):
             self.status = "Blocked"
             raise ComplianceError(f"{self.country} is a landlocked country and cannot participate in transactions")
 
-if __name__ == "__main__":
-    # Test batch with mixed types and a compliance risk
-    batch: List[Transaction] = [
-        Transaction(100.0, "Nike"),
-        InternationalTransaction(150.0, "Sony", "Japan", 1.2),
-        InternationalTransaction(50.0, "Tehran Cafe", "Iran", 1.0),
-        Transaction(5.0, "Scammer")
-    ]
+# if __name__ == "__main__":
+#     # Test batch with mixed types and a compliance risk
+#     batch: List[Transaction] = [
+#         Transaction(100.0, "Nike"),
+#         InternationalTransaction(150.0, "Sony", "Japan", 1.2),
+#         InternationalTransaction(50.0, "Tehran Cafe", "Iran", 1.0),
+#         Transaction(5.0, "Scammer")
+#     ]
 
-    print("--- Visa Batch Processing ---")
-    for t in batch:
-        try:
-            t.validate()
-            print(f"SUCCES: {t}")
-        except (ValueError, TypeError) as e:
-            print(f"DATA ERROR: {e}")
-        except ComplianceError as e:
-            print(f"SECURITY ALERT: {e}")
+#     print("--- Visa Batch Processing ---")
+#     for t in batch:
+#         try:
+#             t.validate()
+#             print(f"SUCCESS: {t}")
+#         except (ValueError, TypeError) as e:
+#             print(f"DATA ERROR: {e}")
+#         except ComplianceError as e:
+#             print(f"SECURITY ALERT: {e}")
