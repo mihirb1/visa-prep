@@ -1,6 +1,8 @@
 from flask import Flask, request, jsonify
+import sqlite3
 # We import your "Brain" from the other file
 from transaction_models import Transaction, InternationalTransaction, ComplianceError
+from database_manager import save_transaction
 
 app = Flask(__name__)
 
@@ -25,6 +27,7 @@ def validate_route() -> tuple:
             transaction = Transaction(amount, merchant)
 
         transaction.validate()
+        save_transaction(transaction)
 
         return jsonify({
             "status": "Success",
