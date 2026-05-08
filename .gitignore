@@ -1,2 +1,4 @@
 .venv/
 git_portable/
+.coverage
+__pycache__/
