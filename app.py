@@ -1,8 +1,8 @@
 from flask import Flask, request, jsonify
 import sqlite3
 # We import your "Brain" from the other file
-from transaction_models import Transaction, InternationalTransaction, ComplianceError
-from database_manager import save_transaction
+from transaction_models import Transaction, InternationalTransaction, Merchant, ComplianceError
+from database_manager import save_transaction, get_or_create_merchant
 
 app = Flask(__name__)
 
@@ -10,17 +10,30 @@ app = Flask(__name__)
 def validate_route() -> tuple:
     """
     Visa Validation API.
-    Expects JSON: {"amount": 100.0, "merchant": "Nike", "Country": "USA", "rate": 1.0}
+    Expects JSON: {"amount": 100.0, "merchant": "Nike", "country": "USA", "rate": 1.0}
     """
     data = request.get_json() # get_json gets requests data, and turns it into py dict
-
     try:
-
         amount = data.get("amount")
-        merchant = data.get("merchant")
+
+        # finds corresponding merchant_id, category, risk_level for this merchant name 
+        # (creates new row if needed)
+        merchant_name = data.get("merchant")
+        merchant_res = get_or_create_merchant(merchant_name) 
+
         country = data.get("country", "USA")
         rate = data.get("rate", 1.0)
 
+        # validate merchant
+        merchant = Merchant(
+            merchant_id = merchant_res["id"],
+            merchant_name = merchant_name,
+            category = merchant_res["category"],
+            risk_level = merchant_res["risk_level"]
+        )
+        merchant.validate()
+
+        # validate transaction, since merchant is valid
         if country != "USA":
             transaction = InternationalTransaction(amount, merchant, country, rate)
         else:
@@ -32,10 +45,13 @@ def validate_route() -> tuple:
         return jsonify({
             "status": "Success",
             "transaction_status": transaction.status,
-            "merchant": merchant
+            "merchant": merchant_name,
+            "merchant_id": merchant.merchant_id
         }), 200
+        
 
     except ComplianceError as e:
+        save_transaction(transaction)
         return jsonify({"status": "Security Alert", "message": str(e)}), 400
 
     except (TypeError, ValueError) as e:
