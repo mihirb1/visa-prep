@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS merchants ( --only recreates table if it DNE
 ) STRICT;
 -- enforces types using STRICT
 
+CREATE INDEX IF NOT EXISTS idx_merchant_category ON merchants(category);
 
 CREATE TABLE IF NOT EXISTS transactions (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -23,12 +24,19 @@ CREATE TABLE IF NOT EXISTS transactions (
 ) STRICT;
 
 -- Sample data
-INSERT INTO merchants(name, category, risk_level)
-VALUES ('Nike', 'Athletic', 0.05), ('Adidas', 'Athletic', 0.05), ('Hollister', 'Clothing', 0.10),
-('Shein', 'E-commerce', 0.40), ('Alibaba', 'E-commerce', 0.50);
+INSERT INTO merchants (name, category, risk_level) VALUES 
+('Apple Store', 'Tech', 0.02),
+('McDonalds', 'Food', 0.05),
+('Louis Vuitton', 'Luxury', 0.15),
+('BettingWorld', 'Gambling', 0.85),
+('Local Coffee', 'Food', 0.10);
 
-
-INSERT INTO transactions(amount, merchant_id, country, rate, status)
-VALUES (20.5, 2, 'United States', 1.0, 'Validated'), (6.70, 1, 'China', 2.78, 'Validated'),
-(4.20, 3, 'Bangladesh', 0.48, 'Validated'), (3.14, 5, 'Iran', 3.74, 'Blocked');
+INSERT INTO transactions (amount, merchant_id, country, rate, status) VALUES 
+(1200.00, 1, 'USA', 1.0, 'Validated'),      -- Big Tech Purchase
+(15.50, 2, 'USA', 1.0, 'Validated'),        -- Fast Food
+(3500.00, 3, 'France', 0.92, 'Pending'),    -- High Value Luxury
+(50.00, 4, 'Cyprus', 0.85, 'Blocked'),      -- High Risk Gambling
+(4.25, 5, 'USA', 1.0, 'Validated'),         -- Small Coffee
+(250.00, 4, 'China', 7.24, 'Validated'),     -- E-commerce International
+(89.99, 1, 'Vietnam', 25000.0, 'Validated'); -- Athletic Apparel
 

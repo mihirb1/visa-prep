@@ -1,12 +1,11 @@
 import sqlite3
 from transaction_models import Transaction
 from sqlite3 import IntegrityError
-
 def save_transaction(transaction: Transaction) -> None:  
     '''
     Takes in a transaction object (validated) from app.py, inserts its data into SQL
     '''
-    with sqlite3.connect("visa_ledger.db") as conn:
+    with sqlite3.connect("visa_ledger.db", isolation_level = "IMMEDIATE") as conn:
         try:
             conn.execute("PRAGMA foreign_keys = ON;")
             cursor = conn.cursor()
@@ -41,7 +40,7 @@ def get_or_create_merchant(merchant: str, category: str="General", risk_level: f
     elif merchant.strip() == "":
         raise ValueError("Merchant name can not be empty")
 
-    with sqlite3.connect("visa_ledger.db") as conn:
+    with sqlite3.connect("visa_ledger.db", isolation_level = "IMMEDIATE") as conn:
         try:
             cursor = conn.cursor()
 
