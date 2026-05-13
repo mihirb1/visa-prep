@@ -64,6 +64,6 @@ def validate_route() -> tuple:
         return jsonify({"status": "System Error", "message": "An unexpected error occurred"}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host="0.0.0.0", debug=True)
 
 
