@@ -1,7 +1,10 @@
 services:
   api:
+    # build creates an image based on the Dockerfile if it does not exist yet
     build: .
     ports:
       - "5000:5000"
+    # volumes allows for persistent data, maps local computer folder (here cur dir) to docker container folder
+    # in this case, it will synchronous code between the two, in other cases, it may synchronize data (ex. files)
     volumes:
       - .:/app  
